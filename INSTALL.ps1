@@ -109,15 +109,14 @@ public class Meas {
 }
 '@
     $t=[Meas]::Rect("tidalnowplaying"); $c=[Meas]::Rect("typography")
-    if($t[0] -gt 0){  # TIDAL: big, centred on the bar
-      $tx=[int]($bx + ($bw-$t[0])/2); $ty=[int]($by + ($bh-$t[1])/2)
-      & $rm @("!Move","$tx","$ty","TidalNowPlaying")
+    if($t[0] -gt 0){  # now-playing: top-left corner
+      & $rm @("!Move","$bx","$by","TidalNowPlaying")
     }
-    if($c[0] -gt 0){  # Clock: small, pinned to the right edge (its window overhangs left)
-      $cx=[int]($bx + $bw - $c[0] - 10); $cy=[int]($by + ($bh-$c[1])/2)
+    if($c[0] -gt 0){  # clock: bottom-right corner (its wide window overhangs left)
+      $cx=[int]($bx + $bw - $c[0] - 10); $cy=[int]($by + $bh - $c[1] - 10)
       & $rm @("!Move","$cx","$cy","Typography\clock")
     }
-    Say "  [rainmeter] skins loaded & positioned (TIDAL centred, clock right)" Green
+    Say "  [rainmeter] skins loaded & positioned (now-playing top-left, clock bottom-right)" Green
   } else { Say "  [rainmeter] skins loaded (connect bar + drag them over)" Yellow }
 } else {
   Say "`n  ! Rainmeter is not installed yet." Yellow
