@@ -1,5 +1,7 @@
 # rainmeter-tidal-bar-display
 
+![TIDAL now-playing widget and clock on an ultrawide bar monitor](docs/screenshot.png)
+
 Rainmeter setup for an ultrawide **"bar" secondary monitor** (e.g. 1920×440):
 
 - 🕐 A centered **Typography clock**
@@ -38,7 +40,8 @@ Then just play a track in TIDAL. `README.txt` has the same steps in Swedish.
 - Moving the clock sideways but it "sticks"? Right‑click it → *Settings* → uncheck **Keep on screen** (its window is wider than the bar).
 - No wallpaper is bundled — supply your own.
 
-## Credits
+## Credits & license
 
-- **Typography** clock skin by Alex Guerrieri (*klaidliadon*), Creative Commons.
+- This project's own code (TIDAL widget, SMTC reader, installer) is released under the **MIT License** — see [LICENSE](LICENSE).
+- The bundled **Typography** clock skin is by Alex Guerrieri (*klaidliadon*) under a **Creative Commons** license and remains under its own terms.
 - TIDAL now‑playing widget, SMTC reader and installer built with the help of Claude.
