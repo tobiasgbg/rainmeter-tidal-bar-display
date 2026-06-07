@@ -1,0 +1,11 @@
+# Runtime data written by the poller (generated per machine)
+nowplaying.txt
+cover.png
+
+# Local wallpaper (supply your own; not redistributed)
+wallpaper.*
+
+# OS junk
+Thumbs.db
+desktop.ini
+*.lnk
