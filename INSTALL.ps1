@@ -49,6 +49,10 @@ try {
   Say "  [taskbar] off on 2nd display (applies after next sign-in)" Green
 } catch { Say "  [taskbar] skipped: $($_.Exception.Message)" Yellow }
 
+# Make this process per-monitor DPI aware so screen/window coords match Rainmeter's
+Add-Type -Namespace Dpi -Name Ctx -MemberDefinition '[System.Runtime.InteropServices.DllImport("user32.dll")] public static extern bool SetProcessDpiAwarenessContext(System.IntPtr v);'
+try { [Dpi.Ctx]::SetProcessDpiAwarenessContext([System.IntPtr](-4)) | Out-Null } catch {}
+
 # Detect the bar monitor (the non-primary screen)
 Add-Type -AssemblyName System.Windows.Forms
 $bar = [System.Windows.Forms.Screen]::AllScreens | Where-Object { -not $_.Primary } | Select-Object -First 1
@@ -85,14 +89,35 @@ if($rm){
   & $rm @("!ActivateConfig","TidalNowPlaying","TidalNowPlaying.ini"); Start-Sleep -Seconds 2
   if($bar){
     $bx=$bar.Bounds.X; $by=$bar.Bounds.Y; $bw=$bar.Bounds.Width; $bh=$bar.Bounds.Height
-    # Clock: window is wider than the bar, so disable keep-on-screen, then centre the visible digits
-    & $rm @("!KeepOnScreen","0","Typography\clock"); Start-Sleep -Milliseconds 300
-    $cx=[int]($bx + $bw/2 - 1695); $cy=[int]($by + ($bh-301)/2)
-    & $rm @("!Move","$cx","$cy","Typography\clock")
-    # TIDAL widget: left side, vertically centred
-    $tx=[int]($bx + 20); $ty=[int]($by + ($bh-96)/2)
-    & $rm @("!Move","$tx","$ty","TidalNowPlaying")
-    Say "  [rainmeter] skins loaded & positioned on the bar ($bw x $bh)" Green
+    # the clock window is wider than the bar, so let it overhang the left
+    & $rm @("!KeepOnScreen","0","Typography\clock"); Start-Sleep -Milliseconds 600
+    # measure both skin windows so positioning works at any resolution
+    Add-Type @'
+using System;using System.Text;using System.Runtime.InteropServices;
+public class Meas {
+ [DllImport("user32.dll")] static extern bool EnumWindows(EnumWindowsProc f,IntPtr l);
+ [DllImport("user32.dll")] static extern int GetClassName(IntPtr h,StringBuilder s,int n);
+ [DllImport("user32.dll")] static extern int GetWindowText(IntPtr h,StringBuilder s,int n);
+ [DllImport("user32.dll")] static extern bool GetWindowRect(IntPtr h,out RECT r);
+ delegate bool EnumWindowsProc(IntPtr h,IntPtr l);
+ [StructLayout(LayoutKind.Sequential)] public struct RECT{public int L,T,R,B;}
+ public static int[] Rect(string needle){ int[] res={0,0};
+  EnumWindows((h,l)=>{var cn=new StringBuilder(256);GetClassName(h,cn,256);
+   if(cn.ToString()=="RainmeterMeterWindow"){var tt=new StringBuilder(512);GetWindowText(h,tt,512);
+    if(tt.ToString().ToLower().Contains(needle)){RECT r;GetWindowRect(h,out r);res[0]=r.R-r.L;res[1]=r.B-r.T;}}
+   return true;},IntPtr.Zero); return res; }
+}
+'@
+    $t=[Meas]::Rect("tidalnowplaying"); $c=[Meas]::Rect("typography")
+    if($t[0] -gt 0){  # TIDAL: big, centred on the bar
+      $tx=[int]($bx + ($bw-$t[0])/2); $ty=[int]($by + ($bh-$t[1])/2)
+      & $rm @("!Move","$tx","$ty","TidalNowPlaying")
+    }
+    if($c[0] -gt 0){  # Clock: small, pinned to the right edge (its window overhangs left)
+      $cx=[int]($bx + $bw - $c[0] - 10); $cy=[int]($by + ($bh-$c[1])/2)
+      & $rm @("!Move","$cx","$cy","Typography\clock")
+    }
+    Say "  [rainmeter] skins loaded & positioned (TIDAL centred, clock right)" Green
   } else { Say "  [rainmeter] skins loaded (connect bar + drag them over)" Yellow }
 } else {
   Say "`n  ! Rainmeter is not installed yet." Yellow
