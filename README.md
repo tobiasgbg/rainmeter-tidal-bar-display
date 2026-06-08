@@ -5,14 +5,14 @@
 Rainmeter setup for an ultrawide **"bar" secondary monitor** (e.g. 1920×440):
 
 - 🕐 A **Typography clock** (Swedish weekday/date)
-- 🎵 A live **TIDAL "now playing"** widget — **album art** + title + artist, updated in real time, with long titles **scrolling sideways (marquee)**
+- 🎵 A live **TIDAL "now playing"** widget — title + artist, updated in real time, with long titles **scrolling sideways (marquee)**
 
 The TIDAL widget reads **Windows System Media Transport Controls (SMTC)** — the same now-playing info shown in the Windows media popup — so it follows **TIDAL** (desktop app or browser), and in fact almost any media app.
 
 ## How it works
 
 A tiny background reader (`poller/poll-smtc.ps1`) polls SMTC and writes the current track to
-`%LOCALAPPDATA%\TidalNowPlaying\nowplaying.txt`. On each track change it also looks up the **album art** via the iTunes Search API and downloads it next to that file. The Rainmeter skin **`TidalNowPlaying`** reads that file every second and renders the cover + text on the bar.
+`%LOCALAPPDATA%\TidalNowPlaying\nowplaying.txt`. The Rainmeter skin **`TidalNowPlaying`** reads that file every second and renders it on the bar.
 
 > ⚠️ The reader must run under **Windows PowerShell 5.1** (`powershell.exe`) — PowerShell 7 dropped the built-in WinRT projection needed for SMTC. The included `launch-poller.vbs` handles that, runs it hidden, and auto-starts it at logon.
 
@@ -39,7 +39,6 @@ Edit `Skins\TidalNowPlaying\TidalNowPlaying.ini` (or right-click the skin → *E
 
 - **Colours / fonts / size** — the `[Variables]` block and each meter's `FontSize`.
 - **Scroll speed** — long titles scroll via `marquee.lua`; raise `UpdateDivider` on `[MeasureScroll]` to slow it down, or change `#Window#` (number of visible characters).
-- **Album art** — fetched from the iTunes Search API on each track change (cover left, text right). To hide it, remove the `[MeterCover]` / `[mCover]` sections and set the text X back to `20`.
 - **Position** — drag the skin on the bar, or right-click → *Settings*.
 
 ## Troubleshooting
@@ -70,7 +69,7 @@ Edit `Skins\TidalNowPlaying\TidalNowPlaying.ini` (or right-click the skin → *E
 ## Notes
 
 - **Works with more than TIDAL:** because it reads SMTC, it also shows **Spotify, Windows Media Player, browsers** and most media apps. `poll-smtc.ps1` prefers a TIDAL session and otherwise falls back to whatever is currently playing.
-- TIDAL returns **no cover art** via SMTC (the thumbnail reference is present but empty), so album art is fetched from the free **iTunes Search API** by artist + title. Mainstream tracks match reliably; obscure ones may miss, in which case the widget just shows title + artist. Note: the lookup sends the current artist + title to Apple over the internet.
+- Album name / cover art often come back empty from TIDAL's app via SMTC, so the widget shows **title + artist**.
 - Long titles **scroll sideways (marquee)** so the whole title can be read; short titles stay still.
 - If a skin lands in the wrong spot, just drag it onto the bar.
 - Moving the clock sideways but it "sticks"? Right-click it → *Settings* → uncheck **Keep on screen** (its window is wider than the bar).
