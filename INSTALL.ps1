@@ -1,4 +1,4 @@
-<#
+﻿<#
   Bar-display migration installer.
   Run on the NEW PC AFTER connecting the bar monitor.
   Easiest: double-click INSTALL.cmd. (Or: right-click this file > Run with PowerShell.)
