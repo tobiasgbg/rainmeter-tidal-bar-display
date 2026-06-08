@@ -39,13 +39,14 @@ Edit `Skins\TidalNowPlaying\TidalNowPlaying.ini` (or right-click the skin → *E
 
 - **Colours / fonts / size** — the `[Variables]` block and each meter's `FontSize`.
 - **Scroll speed** — long titles scroll via `marquee.lua`; raise `UpdateDivider` on `[MeasureScroll]` to slow it down, or change `#Window#` (number of visible characters).
+- **Auto-hide** — the widget shows only while something is **playing** and hides when paused/stopped/closed (the `IfMatch=^Playing$` on `[mStatus]`). To also keep it visible while paused, change that to `IfMatch=^(Playing|Paused)$`; to always show it, remove the `IfMatch*` lines.
 - **Position** — drag the skin on the bar, or right-click → *Settings*.
 
 ## Troubleshooting
 
 **Widget is blank**
 
-- Make sure something is playing or paused in TIDAL — it's empty when there's no active media session.
+- The widget **auto-hides unless something is playing** — start playback in TIDAL and it appears. (See *Auto-hide* under Customization to change that.)
 - Check the reader is running:
   ```powershell
   Get-CimInstance Win32_Process -Filter "Name='powershell.exe'" |
