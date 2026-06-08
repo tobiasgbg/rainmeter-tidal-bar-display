@@ -4,8 +4,8 @@
 
 Rainmeter setup for an ultrawide **"bar" secondary monitor** (e.g. 1920×440):
 
-- 🕐 A centered **Typography clock**
-- 🎵 A live **TIDAL "now playing"** widget — title + artist, updated in real time, with long titles wrapping onto multiple lines
+- 🕐 A **Typography clock** (Swedish weekday/date)
+- 🎵 A live **TIDAL "now playing"** widget — title + artist, updated in real time, with long titles **scrolling sideways (marquee)**
 
 The TIDAL widget reads **Windows System Media Transport Controls (SMTC)** — the same now-playing info shown in the Windows media popup — so it follows **TIDAL** (desktop app or browser), and in fact almost any media app.
 
@@ -28,7 +28,7 @@ The installer:
 - installs the background reader to `%LOCALAPPDATA%\TidalNowPlaying` and **fixes the path for the current user**
 - adds the reader to **Startup** (auto-start at logon) and starts it now
 - turns the **taskbar off on the secondary display**
-- loads and **positions** the clock (centered) and the TIDAL widget on the bar
+- loads and **positions** the now-playing (top-left) and the clock (bottom-right) on the bar
 - sets a wallpaper on the bar **if** you place a `wallpaper.jpg` next to `INSTALL.cmd`
 
 Then just play a track in TIDAL. `README.txt` has the same steps in Swedish.
@@ -38,7 +38,7 @@ Then just play a track in TIDAL. `README.txt` has the same steps in Swedish.
 Edit `Skins\TidalNowPlaying\TidalNowPlaying.ini` (or right-click the skin → *Edit skin*):
 
 - **Colours / fonts / size** — the `[Variables]` block and each meter's `FontSize`.
-- **Width / wrapping** — the title and artist use `ClipString=2`, which wraps long text onto multiple lines. `W=660` sets how wide it gets before wrapping (keep it narrow enough to clear the clock).
+- **Scroll speed** — long titles scroll via `marquee.lua`; raise `UpdateDivider` on `[MeasureScroll]` to slow it down, or change `#Window#` (number of visible characters).
 - **Position** — drag the skin on the bar, or right-click → *Settings*.
 
 ## Troubleshooting
@@ -70,7 +70,7 @@ Edit `Skins\TidalNowPlaying\TidalNowPlaying.ini` (or right-click the skin → *E
 
 - **Works with more than TIDAL:** because it reads SMTC, it also shows **Spotify, Windows Media Player, browsers** and most media apps. `poll-smtc.ps1` prefers a TIDAL session and otherwise falls back to whatever is currently playing.
 - Album name / cover art often come back empty from TIDAL's app via SMTC, so the widget shows **title + artist**.
-- Long titles **wrap** onto extra lines so nothing is cut off.
+- Long titles **scroll sideways (marquee)** so the whole title can be read; short titles stay still.
 - If a skin lands in the wrong spot, just drag it onto the bar.
 - Moving the clock sideways but it "sticks"? Right-click it → *Settings* → uncheck **Keep on screen** (its window is wider than the bar).
 - No wallpaper is bundled — supply your own.
