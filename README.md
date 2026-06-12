@@ -29,7 +29,7 @@ The installer:
 - installs the background reader to `%LOCALAPPDATA%\TidalNowPlaying` and **fixes the path for the current user**
 - adds the reader to **Startup** (auto-start at logon) and starts it now
 - turns the **taskbar off on the secondary display**
-- loads and **positions** the now-playing (top-left), the weather (top-right) and the clock (bottom-right) on the bar
+- loads and **positions** the now-playing (top-left), the weather (bottom-centre) and the clock (bottom-right) on the bar
 - sets a wallpaper on the bar **if** you place a `wallpaper.jpg` next to `INSTALL.cmd`
 
 Then just play a track in TIDAL. `README.txt` has the same steps in Swedish.

@@ -125,11 +125,11 @@ public class Meas {
       $cx=[int]($bx + $bw - $c[0] - 10); $cy=[int]($by + $bh - $c[1] - 10)
       & $rm @("!Move","$cx","$cy","Typography\clock")
     }
-    if($w[0] -gt 0){  # weather: top-right corner, above the clock
-      $wxp=[int]($bx + $bw - $w[0] - 10); $wyp=[int]($by + 15)
+    if($w[0] -gt 0){  # weather: bottom-centre of the bar
+      $wxp=[int]($bx + ($bw - $w[0])/2); $wyp=[int]($by + $bh - $w[1] - 10)
       & $rm @("!Move","$wxp","$wyp","Weather")
     }
-    Say "  [rainmeter] skins loaded & positioned (now-playing top-left, weather top-right, clock bottom-right)" Green
+    Say "  [rainmeter] skins loaded & positioned (now-playing top-left, weather bottom-centre, clock bottom-right)" Green
   } else { Say "  [rainmeter] skins loaded (connect bar + drag them over)" Yellow }
 } else {
   Say "`n  ! Rainmeter is not installed yet." Yellow
