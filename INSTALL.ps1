@@ -14,7 +14,7 @@ Say "Package folder: $pkg`n"
 $docs  = [Environment]::GetFolderPath('MyDocuments')
 $skins = Join-Path $docs 'Rainmeter\Skins'
 New-Item -ItemType Directory -Force -Path $skins | Out-Null
-foreach($s in 'Typography','TidalNowPlaying'){
+foreach($s in 'Typography','TidalNowPlaying','Weather'){
   $src = Join-Path $pkg "Skins\$s"
   if(Test-Path $src){ Copy-Item $src $skins -Recurse -Force; Say "  [skin]   $s" Green }
 }
@@ -32,6 +32,14 @@ $ini = Join-Path $skins 'TidalNowPlaying\TidalNowPlaying.ini'
 if(Test-Path $ini){
   (Get-Content $ini) | ForEach-Object { if($_ -match '^NP='){ "NP=$np" } else { $_ } } | Set-Content $ini -Encoding UTF8
   Say "  [skin]   path set to $np" Green
+}
+
+# 3b) Point the weather skin at this PC's weather file too
+$wx   = Join-Path $poll 'weather.txt'
+$wini = Join-Path $skins 'Weather\Weather.ini'
+if(Test-Path $wini){
+  (Get-Content $wini) | ForEach-Object { if($_ -match '^WX='){ "WX=$wx" } else { $_ } } | Set-Content $wini -Encoding UTF8
+  Say "  [skin]   weather path set to $wx" Green
 }
 
 # 4) Auto-start the reader at logon
@@ -87,6 +95,7 @@ if($rm){
   & $rm "!RefreshApp"; Start-Sleep -Seconds 2
   & $rm @("!ActivateConfig","Typography\clock","clock.ini"); Start-Sleep -Seconds 1
   & $rm @("!ActivateConfig","TidalNowPlaying","TidalNowPlaying.ini"); Start-Sleep -Seconds 2
+  & $rm @("!ActivateConfig","Weather","Weather.ini"); Start-Sleep -Seconds 2
   if($bar){
     $bx=$bar.Bounds.X; $by=$bar.Bounds.Y; $bw=$bar.Bounds.Width; $bh=$bar.Bounds.Height
     # the clock window is wider than the bar, so let it overhang the left
@@ -108,7 +117,7 @@ public class Meas {
    return true;},IntPtr.Zero); return res; }
 }
 '@
-    $t=[Meas]::Rect("tidalnowplaying"); $c=[Meas]::Rect("typography")
+    $t=[Meas]::Rect("tidalnowplaying"); $c=[Meas]::Rect("typography"); $w=[Meas]::Rect("weather")
     if($t[0] -gt 0){  # now-playing: top-left corner
       & $rm @("!Move","$bx","$by","TidalNowPlaying")
     }
@@ -116,7 +125,11 @@ public class Meas {
       $cx=[int]($bx + $bw - $c[0] - 10); $cy=[int]($by + $bh - $c[1] - 10)
       & $rm @("!Move","$cx","$cy","Typography\clock")
     }
-    Say "  [rainmeter] skins loaded & positioned (now-playing top-left, clock bottom-right)" Green
+    if($w[0] -gt 0){  # weather: top-right corner, above the clock
+      $wxp=[int]($bx + $bw - $w[0] - 10); $wyp=[int]($by + 15)
+      & $rm @("!Move","$wxp","$wyp","Weather")
+    }
+    Say "  [rainmeter] skins loaded & positioned (now-playing top-left, weather top-right, clock bottom-right)" Green
   } else { Say "  [rainmeter] skins loaded (connect bar + drag them over)" Yellow }
 } else {
   Say "`n  ! Rainmeter is not installed yet." Yellow
